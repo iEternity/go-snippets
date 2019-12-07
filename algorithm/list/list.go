@@ -62,39 +62,23 @@ func Add(h1, h2 *Node) *Node {
 	h1 = Reverse(h1)
 	h2 = Reverse(h2)
 
-	var prev, head *Node
-	r := 0
-	for h1 != nil && h2 != nil {
-		n := h1.Val + h2.Val + r
-		r = n / 10
-		if prev == nil {
-			head = &Node{Val: n % 10}
-			prev = head
-		} else {
-			prev.Next = &Node{Val: n % 10}
-			prev = prev.Next
+	head := &Node{}
+	prev := head
+	r, sum := 0, 0
+	for h1 != nil || h2 != nil || r != 0 {
+		if h1 != nil {
+			sum, h1 = sum+h1.Val, h1.Next
+
 		}
+		if h2 != nil {
+			sum, h2 = sum+h2.Val, h2.Next
+		}
+		sum += r
+		r = sum / 10
 
-		h1, h2 = h1.Next, h2.Next
+		prev.Next = &Node{Val: sum % 10}
+		prev, sum = prev.Next, 0
 	}
 
-	for h1 != nil {
-		n := h1.Val + r
-		r = n / 10
-		prev.Next = &Node{Val: n % 10}
-		prev, h1 = prev.Next, h1.Next
-	}
-
-	for h2 != nil {
-		n := h2.Val + r
-		r = n / 10
-		prev.Next = &Node{Val: n % 10}
-		prev, h2 = prev.Next, h2.Next
-	}
-
-	if r != 0 {
-		prev.Next = &Node{Val: r}
-	}
-
-	return Reverse(head)
+	return Reverse(head.Next)
 }
